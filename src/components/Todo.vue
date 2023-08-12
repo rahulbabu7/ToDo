@@ -28,7 +28,7 @@
           <ul>
             <li
               v-for="item in todoList"
-              :key="index"
+              :key="item.id"
               class="bg-gray-100 py-2 px-3 mb-1 rounded-md shadow-sm flex items-center justify-between"
             >
               <span class="text-gray-800">{{ item.text }}</span>
@@ -46,28 +46,44 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
-  
+  import { ref ,onMounted } from 'vue';
+  import {db} from '../firebase/firebase';
   const todo = ref('');
   const todoList = ref([]);
   const errormsg = ref(false);
   
-  function addTodo() {
+
+  async function fetchTodos() {
+  const result = await db.collection("Todos").get(); //getting the collection from firebase
+  // console.log(result.docs);
+  todoList.value = result.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
+}
+
+// Watch for changes in Firestore collection
+onMounted(fetchTodos);
+
+// fetchTodos();
+
+
+ async function addTodo() {
     if (todo.value !== '') {
-      todoList.value.push({
-        id:todoList.length,
+      await db.collection("Todos").add({
         text:todo.value
       });
       todo.value = '';
       errormsg.value = false;
-    } else {
+      fetchTodos();
+    }
+     else {
       errormsg.value = true;
       todo.value = '';
+      fetchTodos();
 
     }
   }
-  function removeTodo(index){
-    todoList.value.splice(index, 1);
+ async function removeTodo(id){
+    await db.collection("Todos").doc(id).delete();
+    fetchTodos();
 
   }
   
