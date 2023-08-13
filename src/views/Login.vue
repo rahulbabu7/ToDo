@@ -12,7 +12,7 @@
         </button>
     </form>
         <h5 class="mt-4 text-white">
-          Don't have an account? <a href="#" class="text-white ">Sign up</a>
+          Don't have an account? <RouterLink to="/signup"> Sign up</RouterLink>
         </h5>
         <!-- <button class="w-full bg-white hover:bg-white text-black py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 mt-6">
           Continue with Google
@@ -28,8 +28,10 @@
   </template>
   
   <script setup>
+  import {RouterLink} from "vue-router"
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import router from "../router";
  import {ref} from 'vue';
  const email = ref("");
  const password = ref("");
@@ -44,6 +46,7 @@ import 'firebase/auth';
  .signInWithEmailAndPassword(trimmedEmail,trimmedPassword)
   .then(user =>{
     alert(`Log in successfull  ${ user.user.email}` );  //user.user. The double user.user might look a bit unusual, but it suggests that user is an object that has a property named user (which might be confusing in its own right).
+    router.push({ name: 'todo' });  
   },
   err =>{
     alert(err.message);

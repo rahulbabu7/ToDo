@@ -1,9 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/style.css'
+import router from './router'
 
-// import dotenv from 'dotenv';
-
-// dotenv.config(); // Load environment variables
-
-createApp(App).mount('#app')
+createApp(App).use(router).mount('#app')
