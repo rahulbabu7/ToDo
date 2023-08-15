@@ -54,7 +54,7 @@
   const errormsg = ref(false);
   
 
-  // async function fetchTodos() {
+   async function fetchTodos() {
   //   const user = auth.currentUser;
   //   if(user){
   //       const userId = user.uid;
@@ -65,20 +65,13 @@
   // // console.log(result.docs);
   // todoList.value = result.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
 // }
-async function fetchTodos() {
-  const user = auth.currentUser;
+const user = auth.currentUser;
   if (user) {
     const userId = user.uid;
-    console.log("User ID:", userId);
-
-    const result = await db.collection("Todos").where('userId', '==', userId).get();
-    console.log("Query Result:", result.docs);
-    
-    todoList.value = result.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
-    todoList.value = [...todoList.value];
+    const todosSnapshot = await db.collection('Todos').where('userId', '==', userId).get();
+    todoList.value = todosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 }
-
 
 // Watch for changes in Firestore collection
 onMounted(fetchTodos);
