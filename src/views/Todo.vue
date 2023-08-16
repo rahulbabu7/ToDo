@@ -54,18 +54,8 @@
   const errormsg = ref(false);
   
 
-   async function fetchTodos() {
-  //   const user = auth.currentUser;
-  //   if(user){
-  //       const userId = user.uid;
-  //       const result = await db.collection("Todos").where('userId', '==', userId).get(); 
-  // todoList.value = result.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
-  //   }
-  // const result = await db.collection("Todos").get(); //getting the collection from firebase
-  // // console.log(result.docs);
-  // todoList.value = result.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
-// }
-const user = auth.currentUser;
+  async function fetchTodos() {
+  const user = auth.currentUser;
   if (user) {
     const userId = user.uid;
     const todosSnapshot = await db.collection('Todos').where('userId', '==', userId).get();
@@ -79,7 +69,51 @@ onMounted(fetchTodos);
 // fetchTodos();
 
 
- async function addTodo() {
+async function addTodo() {
+  const user = auth.currentUser;
+  
+  if (user && todo.value !== '') {
+    const userId = user.uid;
+    await db.collection("Todos").add({
+      userId: userId,
+      text: todo.value
+    });
+
+    todo.value = '';
+    errormsg.value = false;
+    fetchTodos();
+  } else {
+    errormsg.value = true;
+    todo.value = '';
+    fetchTodos();
+  }
+}
+
+async function removeTodo(id) {
+  const user = auth.currentUser;
+
+  if (user) {
+    const todoRef = db.collection("Todos").doc(id);
+    const todoDoc = await todoRef.get();
+
+    if (todoDoc.exists) {
+      const todoData = todoDoc.data();
+      
+      if (todoData.userId === user.uid) {
+        await todoRef.delete();
+        fetchTodos();
+      } else {
+        console.log("You don't have permission to delete this todo.");
+      }
+    } else {
+      console.log("Todo does not exist.");
+    }
+  } else {
+    console.log("User not authenticated.");
+  }
+}
+/*
+async function addTodo() {
     if (todo.value !== '') {
       await db.collection("Todos").add({
         text:todo.value
@@ -100,7 +134,7 @@ onMounted(fetchTodos);
     fetchTodos();
 
   }
-  
+  */
   </script>
   
   <style>

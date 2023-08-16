@@ -45,7 +45,7 @@ import router from "../router";
  .auth()
  .signInWithEmailAndPassword(trimmedEmail,trimmedPassword)
   .then(user =>{
-    alert(`Log in successfull  ${ user.user.email}` );  //user.user. The double user.user might look a bit unusual, but it suggests that user is an object that has a property named user (which might be confusing in its own right).
+   // alert(`Log in successfull  ${ user.user.email}` );  //user.user. The double user.user might look a bit unusual, but it suggests that user is an object that has a property named user (which might be confusing in its own right).
     router.push({ name: 'todo' });  
   },
   err =>{

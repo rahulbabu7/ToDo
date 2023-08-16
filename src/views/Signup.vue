@@ -46,7 +46,7 @@ import router from "../router";
  .auth()
  .createUserWithEmailAndPassword(trimmedEmail,trimmedPassword)
   .then(user =>{
-    alert(`user created ${ user.user.email}` );  //user.user. The double user.user might look a bit unusual, but it suggests that user is an object that has a property named user (which might be confusing in its own right).
+   // alert(`user created ${ user.user.email}` );  //user.user. The double user.user might look a bit unusual, but it suggests that user is an object that has a property named user (which might be confusing in its own right).
     router.push({ name: 'home' });   //redirecting to home path
   },
   err =>{
